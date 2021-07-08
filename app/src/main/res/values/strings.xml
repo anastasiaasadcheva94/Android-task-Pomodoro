@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">RSShool2021-Android-task-Pomodoro</string>
+    <string name="blinking_indicator_iv">blinking_indicator_iv</string>
+    <string name="stopwatch_timer">00:00:00</string>
+    <string name="start">Start</string>
+    <string name="delete_button_iv">delete_button_iv</string>
+    <string name="min">min</string>
+    <string name="sec">sec</string>
+    <string name="add_stopwatch_btn">Add stopwatch</string>
+</resources>
