@@ -4,21 +4,21 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.drawable.AnimationDrawable
 import android.os.CountDownTimer
-import androidx.core.content.ContextCompat
-import androidx.core.content.contentValuesOf
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
-import by.android.rsshool2021_android_task_pomodoro.R
-import by.android.rsshool2021_android_task_pomodoro.Stopwatch
+import by.android.rsshool2021_android_task_pomodoro.*
 import by.android.rsshool2021_android_task_pomodoro.databinding.StopwatchItemBinding
 import by.android.rsshool2021_android_task_pomodoro.interfaces.StopwatchListener
+import by.android.rsshool2021_android_task_pomodoro.utils.getCountDownTimer
 
 class StopwatchViewHolder(
     private val binding: StopwatchItemBinding,
     private val listener: StopwatchListener,
     private val resources: Resources
-):RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
     private var timer: CountDownTimer? = null
+
+    private var startTime = 0L
 
     fun bind(stopwatch: Stopwatch) {
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
@@ -36,14 +36,12 @@ class StopwatchViewHolder(
         binding.startButton.setOnClickListener {
             if (stopwatch.isStarted) {
                 listener.stop(stopwatch.id, stopwatch.currentMs)
-            }else{
+            } else {
                 listener.start(stopwatch.id)
             }
         }
         binding.deleteButton.setOnClickListener { listener.delete(stopwatch.id) }
     }
-
-
 
     @SuppressLint("ResourceAsColor", "UseCompatLoadingForDrawables", "SetTextI18n")
     private fun startTime(stopwatch: Stopwatch) {
@@ -53,12 +51,19 @@ class StopwatchViewHolder(
         binding.startButton.setBackgroundColor(colorValue)
 
         timer?.cancel()
-        timer = getCountDownTimer(stopwatch)
+        timer = getTimer(stopwatch)
         timer?.start()
 
         binding.blinkingIndicator.isInvisible = false
         (binding.blinkingIndicator.background as? AnimationDrawable)?.start()
+
+
+        //TODO add custom view
     }
+
+
+
+
 
     @SuppressLint("ResourceAsColor", "UseCompatLoadingForDrawables", "SetTextI18n")
     private fun stopTime() {
@@ -73,46 +78,22 @@ class StopwatchViewHolder(
         (binding.blinkingIndicator.background as? AnimationDrawable)?.stop()
     }
 
-    private fun getCountDownTimer(stopwatch: Stopwatch): CountDownTimer {
-        return object : CountDownTimer(PERIOD, UNIT_TEN_MS) {
-            val interval = UNIT_TEN_MS
+    private fun getTimer(stopwatch: Stopwatch) =
+        getCountDownTimer(
+            stopwatch.currentMs,
+            tick = {
+                binding.stopwatchTimer.text = it.displayTime()
+                stopwatch.currentMs=it
+                binding.customCircle.setCurrent(it)
+            },
+            finish = {
+                binding.stopwatchTimer.text = START_TIME
 
-            override fun onTick(millisUntilFinished: Long) {
-                stopwatch.currentMs += interval
-                binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
+                binding.customCircle.setCurrent(0)
+                stopwatch.isStarted = false
+
+                binding.root.setCardBackgroundColor(resources.getColor(R.color.purple_500, resources.newTheme()))
             }
-
-            override fun onFinish() {
-                binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
-            }
-        }
-    }
-
-
-
-    private fun Long.displayTime(): String {
-        if (this <= 0) {
-            return START_TIME
-        }
-
-        val m = this / 1000 % 3600 / 60
-        val s = this / 1000 % 60
-        val ms = this % 1000 / 10
-
-        return "${displaySlot(m)}:${displaySlot(s)}:${displaySlot(ms)}"
-    } //данный метод расширения для Long конвертирует текущее значение таймера в миллисекундах в формат “HH:MM:SS:MsMs” и возвращает соответствующую строку
-
-    private fun displaySlot(count: Long): String {
-        return if (count / 10L > 0) {
-            "$count"
-        } else {
-            "0$count"
-        }
-    }
-
-    private companion object {
-        private const val START_TIME = "00:00:00:00"
-        private const val UNIT_TEN_MS = 10L
-        private const val PERIOD = 1000L * 60L * 60L * 24L // Day
-    }
+        )
 }
+
