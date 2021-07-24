@@ -79,7 +79,7 @@ class ForegroundService : Service() {
 
     @DelicateCoroutinesApi
     private fun continueTimer(startTime: Long) {
-        timer = object: CountDownTimer(startTime, INTERVAL) {
+        timer = object : CountDownTimer(startTime, INTERVAL) {
 
             override fun onTick(millisUntilFinished: Long) {
                 notificationManager?.notify(

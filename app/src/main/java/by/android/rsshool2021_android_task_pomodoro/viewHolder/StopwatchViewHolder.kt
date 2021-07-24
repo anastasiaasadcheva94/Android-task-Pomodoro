@@ -13,7 +13,6 @@ import by.android.rsshool2021_android_task_pomodoro.databinding.StopwatchItemBin
 import by.android.rsshool2021_android_task_pomodoro.displayTime
 import by.android.rsshool2021_android_task_pomodoro.interfaces.StopwatchListener
 
-
 class StopwatchViewHolder(
     private val binding: StopwatchItemBinding,
     private val listener: StopwatchListener,

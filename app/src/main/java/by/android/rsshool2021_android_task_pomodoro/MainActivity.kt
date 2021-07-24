@@ -16,7 +16,6 @@ import by.android.rsshool2021_android_task_pomodoro.interfaces.StopwatchListener
 import by.android.rsshool2021_android_task_pomodoro.service.ForegroundService
 import kotlinx.coroutines.*
 
-
 class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
     private lateinit var binding: ActivityMainBinding
     private val stopwatchAdapter = StopwatchAdapter(this)
@@ -48,19 +47,27 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
         binding.editTextSec.addTextChangedListener {
             sec = binding.editTextSec.text.toString().toLongOrNull()?.times(1000L) ?: 0L
         }
-            binding.addNewStopwatchButton.setOnClickListener {
-                if (checkValues()){
-                    startTime = min + sec
-                    stopwatches.add(Stopwatch(nextId++, startTime, startTime, isStarted = false, isFinished = false))
-                    stopwatchAdapter.submitList(stopwatches.toList())
-                } else {
-                    checkValues()
-                }
+        binding.addNewStopwatchButton.setOnClickListener {
+            if (checkValues()) {
+                startTime = min + sec
+                stopwatches.add(
+                    Stopwatch(
+                        nextId++,
+                        startTime,
+                        startTime,
+                        isStarted = false,
+                        isFinished = false
+                    )
+                )
+                stopwatchAdapter.submitList(stopwatches.toList())
+            } else {
+                checkValues()
             }
+        }
     }
 
-    private fun checkValues():Boolean{
-        return if (min > 0 || sec > 0){
+    private fun checkValues(): Boolean {
+        return if (min > 0 || sec > 0) {
             true
         } else {
             Toast.makeText(this, "Input values", Toast.LENGTH_SHORT).show()
@@ -69,13 +76,13 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
     }
 
     override fun start(id: Int) {
-        if (startedTimerId != -1){
+        if (startedTimerId != -1) {
             val timer = stopwatches.find { it.id == startedTimerId }
-            timer?.let { stop (startedTimerId, timer.currentMs) }
+            timer?.let { stop(startedTimerId, timer.currentMs) }
         }
 
         timer?.cancel()
-        timer = stopwatches.find { it.id == id}?.let { getCountDownTimer(it) }
+        timer = stopwatches.find { it.id == id }?.let { getCountDownTimer(it) }
         timer?.start()
 
         startedTimerId = id
@@ -91,11 +98,24 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
         stopwatchAdapter.submitList(stopwatches.toList())
     }
 
-     private fun changeStopwatch(id: Int, currentMs: Long?, isStarted: Boolean, isFinished: Boolean) {
+    private fun changeStopwatch(
+        id: Int,
+        currentMs: Long?,
+        isStarted: Boolean,
+        isFinished: Boolean
+    ) {
         val newTimers = mutableListOf<Stopwatch>()
         stopwatches.forEach {
             if (it.id == id) {
-                newTimers.add(Stopwatch(it.id, startTime, currentMs ?: it.currentMs, isStarted, isFinished))
+                newTimers.add(
+                    Stopwatch(
+                        it.id,
+                        startTime,
+                        currentMs ?: it.currentMs,
+                        isStarted,
+                        isFinished
+                    )
+                )
             } else {
                 newTimers.add(it)
             }
@@ -112,6 +132,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
             override fun onTick(millisUntilFinished: Long) {
                 changeStopwatch(timer.id, millisUntilFinished, isStarted = true, isFinished = false)
             }
+
             override fun onFinish() {
                 changeStopwatch(timer.id, 0L, isStarted = false, isFinished = true)
             }
@@ -120,7 +141,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onAppBackgrounded(){
+    fun onAppBackgrounded() {
         val startIntent = Intent(this, ForegroundService::class.java)
         startIntent.putExtra(COMMAND_ID, COMMAND_START)
         startIntent.putExtra(STARTED_TIMER_TIME_MS, startTime)
@@ -129,7 +150,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onAppForegrounded(){
+    fun onAppForegrounded() {
         val stopIntent = Intent(this, ForegroundService::class.java)
         stopIntent.putExtra(COMMAND_ID, COMMAND_STOP)
         startService(stopIntent)
