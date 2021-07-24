@@ -7,4 +7,5 @@
     <string name="min">min</string>
     <string name="sec">sec</string>
     <string name="add_stopwatch_btn">Add stopwatch</string>
+    <string name="stop">Stop</string>
 </resources>

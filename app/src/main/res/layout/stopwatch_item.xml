@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <by.android.rsshool2021_android_task_pomodoro.customView.CustomView
-            android:id="@+id/custom_circle"
+            android:id="@+id/progress_circle"
             android:layout_width="25dp"
             android:layout_height="25dp"
             app:custom_color="@color/purple_500"
@@ -61,7 +61,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:background="@color/cardview_light_background"
+            android:background="@color/transparent"
             android:padding="8dp"
             android:src="@drawable/ic_baseline_delete_24"
             app:layout_constraintBottom_toBottomOf="parent"

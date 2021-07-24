@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.service.autofill.FillCallback
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
@@ -35,7 +36,7 @@ class CustomView @JvmOverloads constructor(
         }
 
         paint.color = color
-        paint.style = Paint.Style.FILL
+        paint.style = if (style == FILL) Paint.Style.FILL else Paint.Style.STROKE
     }
 
     override fun onDraw(canvas: Canvas) {
