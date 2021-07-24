@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
             timer?.let { stop(startedTimerId, timer.currentMs) }
         }
 
-        timer?.cancel()
+//        timer?.cancel()
         timer = stopwatches.find { it.id == id }?.let { getCountDownTimer(it) }
         timer?.start()
 
@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
     }
 
     override fun stop(id: Int, currentMs: Long) {
+        timer?.cancel()
         changeStopwatch(id, currentMs, isStarted = false, isFinished = true)
     }
 

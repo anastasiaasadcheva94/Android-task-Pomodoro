@@ -73,9 +73,6 @@ class StopwatchViewHolder(
     private fun startTime(stopwatch: Stopwatch) {
         binding.startButton.text = itemView.context.getString(R.string.stop)
 
-        timer?.cancel()
-        timer?.start()
-
         binding.blinkingIndicator.isInvisible = false
         (binding.blinkingIndicator.background as? AnimationDrawable)?.start()
     }
